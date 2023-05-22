@@ -1,13 +1,13 @@
 # KDBNet
 ## Installation
-```
+```bash
 git clone https://github.com/luoyunan/KDBNet.git
 cd KDBNet
 export PYTHONPATH=$PWD:$PYTHONPATH
 ```
 ## Dependencies
 This package is tested with Python 3.9 and CUDA 11.6 on Ubuntu 20.04, with access to an Nvidia A40 GPU (48GB RAM), AMD EPYC 7443 CPU (2.85 GHz), and 512G RAM. Run the following to create a conda environment and install the required Python packages (modify `pytorch-cuda=11.6` according to your CUDA version). 
-```
+```bash
 conda create -n kdbnet python=3.9
 conda activate kdbnet
 
@@ -18,12 +18,12 @@ conda install -c conda-forge uncertainty-toolbox rdkit pyyaml
 Running the above lines of `conda install` should be sufficient to install all  KDBNet's required packages (and their dependencies). Specific versions of the packages we tested were listed in `requirements.txt`.
 ## Quick Example
 1. Download example data (~120MB) from Dropbox.
-    ```
+    ```bash
     wget https://www.dropbox.com/s/owc45bzbfn05ix4/data.tar.gz
     tar -xf data.tar.gz
     ```
 2. Run the example code in `scripts/`. The following script trains and evaluates a KDBNet model using the Davis dataset of kinase-drug binding affinity. The script randomly splits 70% as training data, 10% as validation data, and 20% as test data.
-    ```
+    ```bash
     CUDA_VISIBLE_DEVICES=0 python run_example.py --task davis --n_epochs 100 --output_dir ../output/davis --save_prediction
     ```
     After the training and testing are finished, the evaluation metrics will be printed in the tarminal. The predicted binding affinity values will be saved as a TSV file in the output directory, with the following format
@@ -39,22 +39,22 @@ Running the above lines of `conda install` should be sufficient to install all  
     ```
     We also support sequence identity-based split such that the model is tested on unseen proteins with sequence identity lower 50% (`--split_method seqid`). To use other sequence identity cutoff, first run MMseqs2 (`cluster` function) to generate the clustering file, and change the initialize the dataset class (`DAVIS` or `KIBA` in `dta.py`) with the file path, e.g., `dataset = DAVIS(mmseqs_seq_cluster_file='mmseqs_cluster.tsv')`.
 2. Ensemble. To ensemble multiple models, use `--n_ensembles` argument. For example, to ensemble 5 models, run
-    ```
+    ```bash
     CUDA_VISIBLE_DEVICES=0 python run_example.py --task davis --n_epochs 100 --n_ensembles 5 --output_dir ../output/davis_ens --save_prediction
     ```
     In the output TSV file, the `y_pred` column is the average of the predictions by the 5 models, and the predictions given by individual model is listed in the `y_pred_0`, `y_pred_1`, ..., `y_pred_4` columns.
 3. Uncertainty estimation. To estimate the uncertainty of the model, use `--uncertainty` argument. When `--uncertainty` is set to `True`, the number of ensembles should be greater than 1. The model will output the mean and standard deviation of the prediction.
-    ```
+    ```bash
     CUDA_VISIBLE_DEVICES=0 python run_example.py --task davis --n_epochs 100 --n_ensembles 5 --uncertainty --output_dir ../output/davis_unc --save_prediction
     ```
     In the output TSV file, there will be a `y_std` column, which is the standard deviation of the predictions by the 5 models and can be used as the uncertainty estimates.
 4. Parallel training. To train ensemble models in parallel, use `--parallel` argument. For example, to train 5 models in parallel, run
-    ```
+    ```bash
     CUDA_VISIBLE_DEVICES=0 python run_example.py --task davis --n_epochs 100 --n_ensembles 5 --uncertainty --parallel
     ```
     You can train a separate model in the ensembles on a single GPU by setting `CUDA_VISIBLE_DEVICES=0,1,2,3,4`. When you have fewer GPUs than the number of ensembles, multiple models may be trained on a single GPU. For example, if you have 2 GPUs and want to train an ensemble of 5 models, you can set `CUDA_VISIBLE_DEVICES=0,1`, and the 3 models will be trained on GPU 0, and the other 2 models will be trained on GPU 1.
 5. Uncertainty recalibration. Use `--recalibrate` argument to perform uncertainty recalibration. For example, to ensemble 5 models and perform uncertainty recalibration, run
-    ```
+    ```bash
     CUDA_VISIBLE_DEVICES=0,1,2 python run_example.py --task davis --n_epochs 100 --n_ensembles 5 --uncertainty --parallel --recalibrate --output_dir ../output/davis_recal --save_prediction
     ```
     In the output TSV file, there will be a `y_std_recalib` column, which is the recalibrated uncertainty.
