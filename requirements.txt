@@ -23,7 +23,7 @@ numpy==1.22.3
 packaging==21.3
 pandas==1.5.2
 pathspec==0.10.2
-Pillow==9.2.0
+Pillow==10.0.1
 pip==22.2.2
 platformdirs==2.5.2
 pluggy==1.0.0
