@@ -1,4 +1,17 @@
 # KDBNet
+- [KDBNet](#kdbnet)
+  - [Overview](#overview)
+  - [Installation](#installation)
+  - [Dependencies](#dependencies)
+  - [Quick Example](#quick-example)
+  - [Other usages](#other-usages)
+  - [Description of data files](#description-of-data-files)
+  - [Citation](#citation)
+  - [Contact](#contact)
+
+## Overview
+KDBNet (kinase–drug binding prediction neural network) is a neural network that integrates protein 3D structure and compound 3D structure to predict compound–protein binding affinity and quantify the prediction uncertainty. Please see our [paper](https://rdcu.be/dqpHa) in Nature Machine Intelligence for details.
+![KDBNet](doc/overview.png)
 ## Installation
 ```bash
 git clone https://github.com/luoyunan/KDBNet.git
@@ -72,6 +85,9 @@ Running the above lines of `conda install` should be sufficient to install all  
     - The `pockets_structure.json` contains the PDB structure data of representative kinase structures. The file is in JSON format where the key is the PDB ID, and the value is the corresponding PDB structure data in a dictionary format, including the following fields: `name` (kinase name), `UniProt_id`, `PDB_id`, `chain` (chain ID in the PDB structure), `seq` (pocket protein sequence), `coords` (coordinates of the N, CA, C, O atoms of residues in the pocket). The `coords` is a dictionary with four fields, and each is a list of xyz coordinates of the N/CA/C/O atom in each residue, i.e., `coords={'N':[[x, y, z], ...]], 'CA': [...], 'C': [...], O: [...]}`
     - The `davis_moil3d_sdf` and `kiba_moil3d_sdf` are diretories that contain the 3D structure (SDF format) of molecules in the Davis and KIBA datasets.
 4. `data/esm1b` contains the pre-computed protein sequence embeddings by the ESM-1b model. The embeddings were saved as PyTorch tensors in the `.pt` format. 
+
+## Citation
+> Luo, Y., Liu, Y. & Peng, J. Calibrated geometric deep learning improves kinase–drug binding predictions. Nat Mach Intell (2023). https://doi.org/10.1038/s42256-023-00751-0
 
 ## Contact
 Please submit GitHub issues or contact Yunan Luo (luoyunan[at]gmail[dot]com) for any questions related to the source code.
